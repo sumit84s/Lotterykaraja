@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lottery Ka Raja</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script>
+    const slots = [
+      "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM",
+      "11:30 AM", "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM",
+      "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM",
+      "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM",
+      "07:00 PM", "07:30 PM", "08:00 PM"
+    ];
+
+    let results = {};
+
+    function loadResults() {
+      const saved = localStorage.getItem('lottery-results');
+      if (saved) results = JSON.parse(saved);
+    }
+
+    function saveResults() {
+      localStorage.setItem('lottery-results', JSON.stringify(results));
+    }
+
+    function getRandomNumber() {
+      return Math.floor(Math.random() * 6) + 1;
+    }
+
+    function updateTable() {
+      const tableBody = document.getElementById("resultBody");
+      tableBody.innerHTML = "";
+
+      slots.forEach(time => {
+        if (!results[time]) {
+          results[time] = getRandomNumber();
+        }
+        const row = `<tr class='border-b text-center'>
+                      <td class='py-2'>${time}</td>
+                      <td class='py-2 text-2xl font-bold text-purple-600'>${results[time]}</td>
+                    </tr>`;
+        tableBody.innerHTML += row;
+      });
+
+      saveResults();
+    }
+
+    window.onload = () => {
+      loadResults();
+      updateTable();
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-yellow-100 via-purple-100 to-pink-100 min-h-screen font-sans">
+  <div class="max-w-3xl mx-auto p-6">
+    <h1 class="text-4xl text-center font-extrabold text-purple-700 mb-6">🎉 Lottery Ka Raja 🎉</h1>
+
+    <table class="w-full bg-white rounded-xl shadow-lg overflow-hidden">
+      <thead class="bg-purple-700 text-white">
+        <tr>
+          <th class="py-2">Samay</th>
+          <th class="py-2">Number</th>
+        </tr>
+      </thead>
+      <tbody id="resultBody" class="text-gray-800">
+        <!-- Results will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
