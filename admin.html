@@ -11,8 +11,12 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    h1 {
-      color: #333;
+    .hidden {
+      display: none;
+    }
+    #loginBox {
+      text-align: center;
+      margin-top: 100px;
     }
     input, button {
       padding: 10px;
@@ -27,22 +31,55 @@
       font-weight: bold;
     }
   </style>
+
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('Service Worker Registered'));
+      });
+    }
+  </script>
+
 </head>
 <body>
-  <h1>Admin Panel - Lottery का राजा</h1>
-  <label>
-    Draw Time: <input type="time" id="drawTime" />
-  </label>
-  <label>
-    Period Number: <input type="number" id="period" />
-  </label>
-  <label>
-    Coupon Number (1-6): <input type="number" id="coupon" min="1" max="6" />
-  </label>
-  <button onclick="saveEntry()">Save Entry</button>
-  <p id="msg"></p>
+  <div id="loginBox">
+    <h2>Enter Admin Password</h2>
+    <input type="password" id="passwordInput" placeholder="Enter password" />
+    <br />
+    <button onclick="checkPassword()">Login</button>
+    <p id="loginMsg" style="color:red;"></p>
+  </div>
+
+  <div id="adminPanel" class="hidden">
+    <h1>Admin Panel - Lottery का राजा</h1>
+    <label>
+      Draw Time: <input type="time" id="drawTime" />
+    </label>
+    <label>
+      Period Number: <input type="number" id="period" />
+    </label>
+    <label>
+      Coupon Number (1-6): <input type="number" id="coupon" min="1" max="6" />
+    </label>
+    <button onclick="saveEntry()">Save Entry</button>
+    <p id="msg"></p>
+  </div>
 
   <script>
+    const correctPassword = "76676Sharma@@";
+
+    function checkPassword() {
+      const userInput = document.getElementById("passwordInput").value;
+      if (userInput === correctPassword) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").classList.remove("hidden");
+      } else {
+        document.getElementById("loginMsg").textContent = "Incorrect password!";
+      }
+    }
+
     function saveEntry() {
       const drawTime = document.getElementById("drawTime").value;
       const period = document.getElementById("period").value;
