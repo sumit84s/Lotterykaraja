@@ -1,109 +1,58 @@
 
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Lottery Ka Raja</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script>
-    const slots = [
-      "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM",
-      "11:30 AM", "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM",
-      "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM",
-      "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM",
-      "07:00 PM", "07:30 PM", "08:00 PM"
-    ];
-    const ADMIN_PASSWORD = "admin123";
-    let results = {};
-    let isAdmin = false;
-
-    function loadResults() {
-      const saved = localStorage.getItem("lottery-results");
-      if (saved) results = JSON.parse(saved);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Lottery का राजा</title>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
     }
-
-    function saveResults() {
-      localStorage.setItem("lottery-results", JSON.stringify(results));
+    h1 {
+      color: #333;
     }
-
-    function updateTable() {
-      const tableBody = document.getElementById("adminResultBody");
-      tableBody.innerHTML = "";
-      slots.forEach(time => {
-        const row = `<tr class='border-b text-center'>
-                      <td class='py-2'>${time}</td>
-                      <td class='py-2'>${results[time] || "-"}</td>
-                    </tr>`;
-        tableBody.innerHTML += row;
-      });
+    input, button {
+      padding: 10px;
+      margin: 10px;
     }
-
-    function setManualResult() {
-      const time = document.getElementById("manualTime").value;
-      const number = parseInt(document.getElementById("manualNumber").value);
-      if (slots.includes(time) && number >= 1 && number <= 6) {
-        results[time] = number;
-        saveResults();
-        updateTable();
-      } else {
-        alert("Kripya sahi time aur number (1-6) daalein.");
-      }
+    label {
+      display: block;
+      margin-top: 15px;
     }
-
-    function checkPassword() {
-      const input = document.getElementById("adminPass").value;
-      if (input === ADMIN_PASSWORD) {
-        isAdmin = true;
-        document.getElementById("adminLogin").classList.add("hidden");
-        document.getElementById("adminPanel").classList.remove("hidden");
-        updateTable();
-      } else {
-        alert("Galat password hai");
-      }
+    #msg {
+      color: green;
+      font-weight: bold;
     }
-
-    window.onload = () => {
-      loadResults();
-    };
-  </script>
+  </style>
 </head>
-<body class="bg-gradient-to-br from-gray-100 via-purple-100 to-pink-100 min-h-screen font-sans">
-  <div class="max-w-3xl mx-auto p-6">
-    <h1 class="text-3xl text-center font-bold text-purple-700 mb-6">🔒 Admin Panel - Lottery Ka Raja</h1>
+<body>
+  <h1>Admin Panel - Lottery का राजा</h1>
+  <label>
+    Draw Time: <input type="time" id="drawTime" />
+  </label>
+  <label>
+    Period Number: <input type="number" id="period" />
+  </label>
+  <label>
+    Coupon Number (1-6): <input type="number" id="coupon" min="1" max="6" />
+  </label>
+  <button onclick="saveEntry()">Save Entry</button>
+  <p id="msg"></p>
 
-    <!-- Admin Login -->
-    <div id="adminLogin" class="p-4 bg-white rounded-xl shadow border mb-6">
-      <h2 class="text-xl font-bold mb-2 text-purple-600">Admin Login</h2>
-      <input type="password" id="adminPass" placeholder="Password daalein" class="border p-2 rounded w-full md:w-auto mb-2" />
-      <button onclick="checkPassword()" class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">Login</button>
-    </div>
-
-    <!-- Admin Control Panel -->
-    <div id="adminPanel" class="hidden p-4 bg-white rounded-xl shadow border">
-      <h2 class="text-xl font-bold mb-4 text-purple-600">🛠️ Manual Number Daalein</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <select id="manualTime" class="border p-2 rounded">
-          <option value="">Samay Chunein</option>
-          <script>
-            slots.forEach(time => {
-              document.write(`<option value="${time}">${time}</option>`);
-            });
-          </script>
-        </select>
-        <input type="number" min="1" max="6" id="manualNumber" class="border p-2 rounded" placeholder="1 se 6 tak" />
-        <button onclick="setManualResult()" class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">Save</button>
-      </div>
-
-      <table class="w-full bg-gray-50 rounded-xl shadow overflow-hidden">
-        <thead class="bg-purple-700 text-white">
-          <tr><th class="py-2">Samay</th><th class="py-2">Current Number</th></tr>
-        </thead>
-        <tbody id="adminResultBody" class="text-gray-800">
-          <!-- Slot results -->
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <script>
+    function saveEntry() {
+      const drawTime = document.getElementById("drawTime").value;
+      const period = document.getElementById("period").value;
+      const coupon = document.getElementById("coupon").value;
+      if (drawTime && period && coupon) {
+        document.getElementById("msg").textContent = "✅ Entry saved (demo only)";
+      } else {
+        document.getElementById("msg").textContent = "❌ Please fill all fields.";
+      }
+    }
+  </script>
 </body>
 </html>

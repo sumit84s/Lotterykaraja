@@ -1,74 +1,149 @@
 
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lottery Ka Raja</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script>
-    const slots = [
-      "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM",
-      "11:30 AM", "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM",
-      "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM",
-      "04:30 PM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM",
-      "07:00 PM", "07:30 PM", "08:00 PM"
-    ];
-
-    let results = {};
-
-    function loadResults() {
-      const saved = localStorage.getItem('lottery-results');
-      if (saved) results = JSON.parse(saved);
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lottery का राजा</title>
+  <style>
+    body {
+      background-color: skyblue;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
 
-    function saveResults() {
-      localStorage.setItem('lottery-results', JSON.stringify(results));
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
     }
 
-    function getRandomNumber() {
-      return Math.floor(Math.random() * 6) + 1;
+    .title {
+      font-size: 24px;
+      font-weight: bold;
     }
 
-    function updateTable() {
-      const tableBody = document.getElementById("resultBody");
-      tableBody.innerHTML = "";
-
-      slots.forEach(time => {
-        if (!results[time]) {
-          results[time] = getRandomNumber();
-        }
-        const row = `<tr class='border-b text-center'>
-                      <td class='py-2'>${time}</td>
-                      <td class='py-2 text-2xl font-bold text-purple-600'>${results[time]}</td>
-                    </tr>`;
-        tableBody.innerHTML += row;
-      });
-
-      saveResults();
+    .clock {
+      font-size: 16px;
     }
 
-    window.onload = () => {
-      loadResults();
-      updateTable();
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      border: 2px solid #000;
     }
-  </script>
+
+    th, td {
+      border: 1px solid #000;
+      padding: 12px;
+    }
+
+    th {
+      background-color: #ffeb3b;
+    }
+
+    #goButton {
+      background-color: red;
+      color: white;
+      font-size: 18px;
+      padding: 10px 30px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 30px;
+      cursor: pointer;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-yellow-100 via-purple-100 to-pink-100 min-h-screen font-sans">
-  <div class="max-w-3xl mx-auto p-6">
-    <h1 class="text-4xl text-center font-extrabold text-purple-700 mb-6">🎉 Lottery Ka Raja 🎉</h1>
+<body>
 
-    <table class="w-full bg-white rounded-xl shadow-lg overflow-hidden">
-      <thead class="bg-purple-700 text-white">
-        <tr>
-          <th class="py-2">Samay</th>
-          <th class="py-2">Number</th>
-        </tr>
-      </thead>
-      <tbody id="resultBody" class="text-gray-800">
-        <!-- Results will be inserted here -->
-      </tbody>
-    </table>
-  </div>
+  <header>
+    <div class="title">Lottery <span style="font-family: 'Noto Sans Devanagari';">का राजा</span></div>
+    <div class="clock" id="clockDisplay"></div>
+  </header>
+
+  <p><strong>Contact For Result Customer Care: 9547542391</strong></p>
+
+  <input type="date" id="datePicker" />
+  <button onclick="displayResults()">Search</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>DRAW TIME</th>
+        <th>PERIOD NUMBER</th>
+        <th>COUPON</th>
+      </tr>
+    </thead>
+    <tbody id="resultTable"></tbody>
+  </table>
+
+  <button id="goButton">GO</button>
+
+  <footer>
+    LOTTERY KA RAJA © 2024 - 2025
+  </footer>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clockDisplay").textContent = now.toLocaleString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const startHour = 9;
+    const endHour = 20;
+    const intervalMinutes = 30;
+
+    function generateDrawTimes() {
+      const drawList = [];
+      let periodCounter = 100;
+      for (let hour = startHour; hour <= endHour; hour++) {
+        for (let min = 0; min < 60; min += intervalMinutes) {
+          drawList.push({
+            drawTime: `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`,
+            period: periodCounter++,
+          });
+        }
+      }
+      return drawList;
+    }
+
+    function displayResults() {
+      const table = document.getElementById("resultTable");
+      table.innerHTML = "";
+
+      const drawList = generateDrawTimes();
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      drawList.forEach(({ drawTime, period }) => {
+        const [h, m] = drawTime.split(':').map(Number);
+        const drawMinutes = h * 60 + m;
+        const isVisible = drawMinutes <= currentMinutes;
+        const coupon = isVisible ? Math.floor(1 + Math.random() * 6) : "Waiting...";
+        const row = `<tr>
+          <td>${drawTime}</td>
+          <td>${period}</td>
+          <td>${coupon}</td>
+        </tr>`;
+        table.innerHTML += row;
+      });
+    }
+
+    displayResults();
+    setInterval(displayResults, 60000); // Refresh every 1 minute
+  </script>
 </body>
 </html>
